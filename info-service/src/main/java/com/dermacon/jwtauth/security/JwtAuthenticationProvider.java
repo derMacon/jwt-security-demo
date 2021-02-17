@@ -10,6 +10,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
+/**
+ * Checks if the provided authentication is valid
+ */
 @Component
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 
@@ -27,6 +30,13 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         this.jwtService = jwtService;
     }
 
+    /**
+     * Checks if the authentication provided by the spring context is correct. This
+     * authentication was generated inside the JwtAuthenticationTokenFilter.
+     * @param authentication authentication provided by the JwtAuthenticationTokenFilter
+     * @return profile of the user attempting to access resource
+     * @throws AuthenticationException if token is invalid
+     */
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
