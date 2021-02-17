@@ -15,7 +15,7 @@ public class JwtTokenService {
     private String secret = "asdfasdfasdfasdfasdf";
 
     // todo
-    private Long expiration = new Long(100000);
+    private Long expiration = new Long(3600000);
 
 //    public JwtTokenService(@Value("${jwt.secret}") String secret,
 //                           @Value("${jwt.expiration}") Long expiration) {
