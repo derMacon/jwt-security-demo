@@ -31,11 +31,6 @@ public class AuthenticationController {
         return "test";
     }
 
-    @PostMapping("/refresh-token")
-    public String refreshToken(@ModelAttribute(value = "inputCredentials") InputCredentials credentials) {
-        System.out.println(credentials.toString());
-        return "redirect:/";
-    }
 
     @RequestMapping("/cookie")
     public String testCookie(HttpServletRequest req,  HttpServletResponse response) {
