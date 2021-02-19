@@ -17,6 +17,7 @@ public class DefaultController {
     @PostMapping("/refresh-token")
     public String refreshToken(@ModelAttribute(value = "inputCredentials") InputCredentials credentials,
                                HttpServletResponse response) {
+//        response.addCookie(new Cookie("jwt-token", "invalid"));
         response.addCookie(new Cookie("jwt-token", "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEiLCJleHAiOjE2NDk2OTE5MTEsImlhdCI6MTYxMzY5MTkxMX0.R1Qd4wnlHBCw3YbVL-dQJRc8CHRFxiNcXp2uJdnBM-Sg8JSEM9ECdSXrp20pYi_hBNXcpBjTVLsT_NFWpwd45g"));
         return credentials.toString();
     }
