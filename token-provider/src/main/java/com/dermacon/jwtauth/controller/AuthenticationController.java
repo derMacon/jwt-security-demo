@@ -31,24 +31,24 @@ public class AuthenticationController {
      * @param request
      * @return
      */
-    @PostMapping("/login")
-    public ResponseEntity createCustomer(@RequestBody AuthenticationRequest request, HttpServletResponse response) {
+    @PostMapping("/create-token")
+    public ResponseEntity createToken(@RequestBody AuthenticationRequest request, HttpServletResponse response) {
         JWTTokenResponse jwtToken = authenticationService.generateJWTToken(request.getUsername(),
                 request.getPassword());
 
-        // create a cookie
-        Cookie cookie = new Cookie("token",jwtToken.getToken());
-
-        // expires in 7 days
-        cookie.setMaxAge(7 * 24 * 60 * 60);
-
-        // optional properties
-        cookie.setSecure(true);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-
-        // add cookie to response
-        response.addCookie(cookie);
+//        // create a cookie
+//        Cookie cookie = new Cookie("token",jwtToken.getToken());
+//
+//        // expires in 7 days
+//        cookie.setMaxAge(7 * 24 * 60 * 60);
+//
+//        // optional properties
+//        cookie.setSecure(true);
+//        cookie.setHttpOnly(true);
+//        cookie.setPath("/");
+//
+//        // add cookie to response
+//        response.addCookie(cookie);
 
         // TODO: add your login logic here
         return new ResponseEntity<>(jwtToken, HttpStatus.OK);

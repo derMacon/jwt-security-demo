@@ -26,6 +26,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
 //                .getRequestDispatcher("/forwarded");
 //        dispatcher.forward(request, response);
 
-        response.sendRedirect(request.getContextPath() + "/new-login");
+        response.sendRedirect(request.getContextPath() + "/login");
     }
 }

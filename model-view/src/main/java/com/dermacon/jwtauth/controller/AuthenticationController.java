@@ -19,19 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class AuthenticationController {
 
-    // todo put this method is init class ???
-    /**
-     * Useful to create a singleton instance because this can be used throughout the project
-     * Loadbalancer annotation tells the template to interpret the given url with the eureka
-     * service discovery tool
-     * @return generated Resttemplate
-     */
-    @Bean
-    @LoadBalanced
-    public RestTemplate getRestTemplate() {
-        return new RestTemplate();
-    }
-
     @Autowired
     private RestTemplate restTemplate;
 
@@ -42,7 +29,7 @@ public class AuthenticationController {
         return "test";
     }
 
-    @RequestMapping("/new-login")
+    @RequestMapping("/login")
     public String newLogin(Model model) {
         model.addAttribute("inputCredentials", new InputCredentials());
         return "login-view";
