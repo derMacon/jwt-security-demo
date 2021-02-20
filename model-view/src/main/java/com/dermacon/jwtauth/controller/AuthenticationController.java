@@ -1,5 +1,8 @@
 package com.dermacon.jwtauth.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -7,6 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -15,8 +19,26 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class AuthenticationController {
 
-    @RequestMapping("/")
+    // todo put this method is init class ???
+    /**
+     * Useful to create a singleton instance because this can be used throughout the project
+     * Loadbalancer annotation tells the template to interpret the given url with the eureka
+     * service discovery tool
+     * @return generated Resttemplate
+     */
+    @Bean
+    @LoadBalanced
+    public RestTemplate getRestTemplate() {
+        return new RestTemplate();
+    }
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @RequestMapping("/check")
     public String test() {
+        String out = restTemplate.getForObject("http://token-provider/health", String.class);
+        System.out.println(" ----------------------> out: " + out);
         return "test";
     }
 
