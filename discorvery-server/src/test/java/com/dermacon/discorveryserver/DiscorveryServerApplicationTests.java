@@ -1,4 +1,4 @@
-package com.dremacon.discorveryserver;
+package com.dermacon.discorveryserver;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
