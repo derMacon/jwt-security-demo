@@ -35,7 +35,7 @@ public class BackendController {
                                HttpServletResponse response) throws IOException {
 
         ResponseEntity<String> tokenResponse;
-        String redirect_url = "/all-cookies";
+        String redirect_url = "/public/all-cookies";
 
         try {
 

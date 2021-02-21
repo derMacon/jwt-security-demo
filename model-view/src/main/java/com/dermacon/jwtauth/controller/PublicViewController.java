@@ -26,7 +26,7 @@ public class PublicViewController {
     public String newLogin(Model model, @RequestParam(required = false) String error) {
         model.addAttribute("errorMessage", error);
         model.addAttribute("inputCredentials", new InputCredentials());
-        return "login-view";
+        return "public/login-view";
     }
 
     @RequestMapping("/register")
