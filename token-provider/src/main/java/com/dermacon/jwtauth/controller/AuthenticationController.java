@@ -1,5 +1,6 @@
 package com.dermacon.jwtauth.controller;
 
+import com.dermacon.jwtauth.data.AppUser;
 import com.dermacon.jwtauth.request.AuthenticationRequest;
 import com.dermacon.jwtauth.response.JWTTokenResponse;
 import com.dermacon.jwtauth.service.AuthenticationService;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.EntityNotFoundException;
-import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping
@@ -36,13 +36,12 @@ public class AuthenticationController {
 
     /**
      * https://attacomsian.com/blog/set-cookie-with-response-entity-in-spring-boot
-     * @param request
-     * @return
+     * @param user user to create a jwt token for
+     * @return token for the given user
      */
     @PostMapping("/create-token")
-    public ResponseEntity<String> createToken(@RequestBody AuthenticationRequest request) {
-        JWTTokenResponse jwtToken = authenticationService.generateJWTToken(request.getUsername(),
-                request.getPassword());
+    public ResponseEntity<String> createToken(@RequestBody AppUser user) {
+        JWTTokenResponse jwtToken = authenticationService.generateJWTToken(user);
         log.info("entity found");
         return new ResponseEntity<>(jwtToken.getToken(), HttpStatus.OK);
     }
@@ -60,34 +59,6 @@ public class AuthenticationController {
 
 
 
-    /**
-     * https://attacomsian.com/blog/set-cookie-with-response-entity-in-spring-boot
-     * @param request
-     * @return
-     */
-    @PostMapping("/create-token-old")
-    public ResponseEntity createTokenold(@RequestBody AuthenticationRequest request,
-                                       HttpServletResponse response) {
-        JWTTokenResponse jwtToken = authenticationService.generateJWTToken(request.getUsername(),
-                request.getPassword());
-
-//        // create a cookie
-//        Cookie cookie = new Cookie("token",jwtToken.getToken());
-//
-//        // expires in 7 days
-//        cookie.setMaxAge(7 * 24 * 60 * 60);
-//
-//        // optional properties
-//        cookie.setSecure(true);
-//        cookie.setHttpOnly(true);
-//        cookie.setPath("/");
-//
-//        // add cookie to response
-//        response.addCookie(cookie);
-
-        // TODO: add your login logic here
-        return new ResponseEntity<>(jwtToken, HttpStatus.OK);
-    }
 
     @PostMapping("/health")
     public String isAlive_post() {
@@ -101,7 +72,6 @@ public class AuthenticationController {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity handleEntityNotFoundException(EntityNotFoundException ex) {
-//        return new ResponseEntity<>(ex.getMessage(), HttpStatus.OK);
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
 //        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }

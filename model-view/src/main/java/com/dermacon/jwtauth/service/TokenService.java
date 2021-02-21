@@ -6,6 +6,8 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.Cookie;
 
+// todo seems as if this is not used at all... maybe delete it???
+
 @Service
 public class TokenService {
 

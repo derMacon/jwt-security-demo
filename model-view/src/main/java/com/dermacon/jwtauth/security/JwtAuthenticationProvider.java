@@ -18,17 +18,8 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
     private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationProvider.class);
 
-    private final JwtTokenService jwtService;
-
-    @SuppressWarnings("unused")
-    public JwtAuthenticationProvider() {
-        this(null);
-    }
-
     @Autowired
-    public JwtAuthenticationProvider(JwtTokenService jwtService) {
-        this.jwtService = jwtService;
-    }
+    private JwtTokenService jwtService;
 
     /**
      * Checks if the authentication provided by the spring context is correct. This

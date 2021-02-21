@@ -1,5 +1,6 @@
 package com.dermacon.jwtauth.controller;
 
+import com.dermacon.jwtauth.data.AppUser;
 import com.dermacon.jwtauth.data.InputCredentials;
 import com.dermacon.jwtauth.request.AuthenticationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -21,6 +24,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping(value = "/public/", method = RequestMethod.POST)
 public class BackendController {
 
     @Autowired
@@ -30,15 +34,18 @@ public class BackendController {
     public void refreshToken(@ModelAttribute(value = "inputCredentials") InputCredentials credentials,
                                HttpServletResponse response) throws IOException {
 
-        ResponseEntity<String> tokenResponse = null;
+        ResponseEntity<String> tokenResponse;
         String redirect_url = "/all-cookies";
 
         try {
-            AuthenticationRequest authReq = new AuthenticationRequest();
-            authReq.setPassword(credentials.getPassword());
-            authReq.setUsername(credentials.getUsername());
+
+            AppUser user = new AppUser.Builder()
+                    .username(credentials.getUsername())
+                    .password(credentials.getPassword())
+                    .build();
+
             tokenResponse = restTemplate.postForEntity("http://token-provider/create-token",
-                    authReq, String.class);
+                    user, String.class);
 
             if (tokenResponse.getStatusCode() == HttpStatus.OK) {
                 response.addCookie(new Cookie("jwt-token", tokenResponse.getBody()));
