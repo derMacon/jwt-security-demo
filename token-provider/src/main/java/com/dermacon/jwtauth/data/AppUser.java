@@ -20,10 +20,13 @@ public class AppUser {
 
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
     public static class Builder {
         private String username;
         private String password;
+        private UserRole role;
 
         public Builder username(String username) {
             this.username = username;
@@ -35,6 +38,10 @@ public class AppUser {
             return this;
         }
 
+        public Builder role(UserRole role) {
+            this.role = role;
+            return this;
+        }
 
         public AppUser build() {
             return new AppUser(this);
@@ -45,13 +52,15 @@ public class AppUser {
     private AppUser(Builder b) {
         this.username = b.username;
         this.password = b.password;
+        this.role = b.role;
     }
 
     public AppUser() {}
 
-    public AppUser(String username, String password) {
+    public AppUser(String username, String password, UserRole role) {
         this.username = username;
         this.password = password;
+        this.role = role;
     }
 
 
@@ -79,6 +88,13 @@ public class AppUser {
         this.password = password;
     }
 
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -89,13 +105,13 @@ public class AppUser {
 
         if (username != null ? !username.equals(user.username) : user.username != null)
             return false;
-        return true;
+        return role == user.role;
     }
 
     @Override
     public int hashCode() {
         int result = username != null ? username.hashCode() : 0;
-        result = 31 * result;
+        result = 31 * result + (role != null ? role.hashCode() : 0);
         return result;
     }
 
@@ -105,6 +121,7 @@ public class AppUser {
                 "userId=" + userId +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", role=" + role +
                 '}';
     }
 }

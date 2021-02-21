@@ -1,6 +1,6 @@
 package com.dermacon.jwtauth.service;
 
-import com.dermacon.jwtauth.data.AccountRepository;
+import com.dermacon.jwtauth.repository.AccountRepository;
 import com.dermacon.jwtauth.data.AppUser;
 import com.dermacon.jwtauth.response.JWTTokenResponse;
 import org.springframework.security.crypto.password.PasswordEncoder;

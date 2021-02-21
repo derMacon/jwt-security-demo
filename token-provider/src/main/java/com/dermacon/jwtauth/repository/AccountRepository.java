@@ -1,5 +1,6 @@
-package com.dermacon.jwtauth.data;
+package com.dermacon.jwtauth.repository;
 
+import com.dermacon.jwtauth.data.AppUser;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
