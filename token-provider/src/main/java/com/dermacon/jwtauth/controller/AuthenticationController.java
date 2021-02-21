@@ -30,14 +30,18 @@ public class AuthenticationController {
         this.authenticationService = authenticationService;
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<String> registerUser(@RequestBody AuthenticationRequest request) {
+
+    }
+
     /**
      * https://attacomsian.com/blog/set-cookie-with-response-entity-in-spring-boot
      * @param request
      * @return
      */
     @PostMapping("/create-token")
-    public ResponseEntity<String> createToken(@RequestBody AuthenticationRequest request,
-                                       HttpServletResponse response) {
+    public ResponseEntity<String> createToken(@RequestBody AuthenticationRequest request) {
         JWTTokenResponse jwtToken = authenticationService.generateJWTToken(request.getUsername(),
                 request.getPassword());
         log.info("entity found");

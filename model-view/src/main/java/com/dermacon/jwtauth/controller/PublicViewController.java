@@ -1,5 +1,6 @@
 package com.dermacon.jwtauth.controller;
 
+import com.dermacon.jwtauth.data.InputCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -7,12 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 @Controller
-public class AuthenticationController {
+@RequestMapping("/public")
+public class PublicViewController {
 
     @Autowired
     private RestTemplate restTemplate;
@@ -31,28 +29,9 @@ public class AuthenticationController {
         return "login-view";
     }
 
-    @RequestMapping("/test")
-    public String testView() {
-        return "test";
-    }
-
-
-    @RequestMapping("/cookie")
-    public String testCookie(HttpServletRequest req,  HttpServletResponse response) {
-        // create a cookie
-        Cookie cookie = new Cookie("test_cookie", "testtest");
-
-        // expires in 7 days
-        cookie.setMaxAge(7 * 24 * 60 * 60);
-
-        // optional properties
-        cookie.setSecure(true);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-
-        // add cookie to response
-        response.addCookie(cookie);
-        return "works";
+    @RequestMapping("/register")
+    public String register(Model model) {
+        return null; // todo
     }
 
 }

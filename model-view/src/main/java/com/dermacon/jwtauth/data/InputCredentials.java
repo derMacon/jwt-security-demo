@@ -1,4 +1,4 @@
-package com.dermacon.jwtauth.controller;
+package com.dermacon.jwtauth.data;
 
 public class InputCredentials {
 
