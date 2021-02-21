@@ -8,6 +8,10 @@
 
 <h3>Login</h3>
 
+<div th:if="${errorMessage != null}">
+    <p th:text="${errorMessage}"></p>
+</div>
+
 <form action="#" method="post"
       th:action="@{/refresh-token}"
       th:object="${inputCredentials}"

@@ -1,15 +1,10 @@
 package com.dermacon.jwtauth.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.Cookie;
@@ -30,7 +25,8 @@ public class AuthenticationController {
     }
 
     @RequestMapping("/login")
-    public String newLogin(Model model) {
+    public String newLogin(Model model, @RequestParam(required = false) String error) {
+        model.addAttribute("errorMessage", error);
         model.addAttribute("inputCredentials", new InputCredentials());
         return "login-view";
     }

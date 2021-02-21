@@ -48,7 +48,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
                     .map(aBoolean -> new JwtAuthenticatedProfile(username))
                     .orElseThrow(() -> new JwtAuthenticationException("JWT Token validation failed"));
 
-        } catch (JwtException ex) {
+        } catch (JwtException | IllegalArgumentException ex) {
             log.error(String.format("Invalid JWT Token: %s", ex.getMessage()));
             throw new JwtAuthenticationException("Failed to verify token");
         }

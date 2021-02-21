@@ -1,6 +1,9 @@
 package com.dermacon.jwtauth.controller;
 
+import com.dermacon.jwtauth.request.AuthenticationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -16,6 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -25,22 +30,28 @@ public class DefaultController {
     private RestTemplate restTemplate;
 
     @PostMapping("/refresh-token")
-    public String refreshToken(@ModelAttribute(value = "inputCredentials") InputCredentials credentials,
-                               HttpServletResponse response) {
-        String token = "";
+    public void refreshToken(@ModelAttribute(value = "inputCredentials") InputCredentials credentials,
+                               HttpServletResponse response) throws IOException {
+        ResponseEntity<String> tokenResponse = null;
+        String url = "/all-cookies";
         try {
-            token = restTemplate.getForObject("http://token-provider/create-token", String.class);
-        } catch (HttpClientErrorException e) {
-            return "redirect:/test";
-        } catch (HttpServerErrorException e) {
-            return "redirect:/login?errorMessage=invalid2";
+            AuthenticationRequest authReq = new AuthenticationRequest();
+            authReq.setPassword(credentials.getPassword());
+            authReq.setUsername(credentials.getUsername());
+            tokenResponse = restTemplate.postForEntity("http://token-provider/create-token",
+                    authReq, String.class);
+
+            if (tokenResponse.getStatusCode() == HttpStatus.OK) {
+                response.addCookie(new Cookie("jwt-token", tokenResponse.getBody()));
+                response.sendRedirect("/all-cookies");
+            } else {
+                response.sendRedirect("/login?error=invalid");
+            }
+
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            response.sendRedirect("/login?error=invalid");
         }
 
-        response.addCookie(new Cookie("jwt-token", token));
-//        response.addCookie(new Cookie("jwt-token", "invalid"));
-//        response.addCookie(new Cookie("jwt-token", "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEiLCJleHAiOjE2NDk2OTE5MTEsImlhdCI6MTYxMzY5MTkxMX0.R1Qd4wnlHBCw3YbVL-dQJRc8CHRFxiNcXp2uJdnBM-Sg8JSEM9ECdSXrp20pYi_hBNXcpBjTVLsT_NFWpwd45g"));
-//        response.sendRedirect(request.getContextPath() + "/new-login");
-        return "redirect:/all-cookies";
     }
 
     @PostMapping("/test")
