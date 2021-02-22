@@ -1,5 +1,6 @@
 package com.dermacon.jwtauth.controller;
 
+import com.dermacon.jwtauth.data.AppUser;
 import com.dermacon.jwtauth.data.InputCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,6 +52,7 @@ public class BackendController {
                 redirect_url = "/login?error=" + tokenResponse.getStatusCode();
             }
 
+            // todo handle java.net.ConnectException (when token-provider is down)
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             redirect_url = "/login?error=404";
         }
