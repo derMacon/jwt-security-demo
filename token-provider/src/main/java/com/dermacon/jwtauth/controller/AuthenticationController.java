@@ -1,11 +1,14 @@
 package com.dermacon.jwtauth.controller;
 
 import com.dermacon.jwtauth.data.AppUser;
+import com.dermacon.jwtauth.data.Credentials;
+import com.dermacon.jwtauth.exception.CredentialsException;
 import com.dermacon.jwtauth.request.AuthenticationRequest;
 import com.dermacon.jwtauth.response.JWTTokenResponse;
 import com.dermacon.jwtauth.service.AuthenticationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.EntityNotFoundException;
+import javax.security.auth.login.CredentialException;
 
 @RestController
 @RequestMapping
@@ -23,42 +27,19 @@ public class AuthenticationController {
 
     private static final Logger log = LoggerFactory.getLogger(AuthenticationController.class);
 
+    @Autowired
     private AuthenticationService authenticationService;
-
-    public AuthenticationController(AuthenticationService authenticationService) {
-        this.authenticationService = authenticationService;
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody AuthenticationRequest request) {
-        return null; // todo
-    }
 
     /**
      * https://attacomsian.com/blog/set-cookie-with-response-entity-in-spring-boot
-     * @param user user to create a jwt token for
+     * @param credentials credentials from the user
      * @return token for the given user
      */
     @PostMapping("/create-token")
-    public ResponseEntity<String> createToken(@RequestBody AppUser user) {
-        JWTTokenResponse jwtToken = authenticationService.generateJWTToken(user);
-        log.info("entity found");
+    public ResponseEntity<String> createToken(@RequestBody Credentials credentials) {
+        JWTTokenResponse jwtToken = authenticationService.generateJWTToken(credentials);
         return new ResponseEntity<>(jwtToken.getToken(), HttpStatus.OK);
     }
-
-    /**
-     * To centralize exception handling use @ControllerAdvice annotation
-     * see: https://howtodoinjava.com/spring-core/spring-exceptionhandler-annotation/
-     * @return conflict response entity
-     */
-//    @ExceptionHandler(EntityNotFoundException.class)
-//    public ResponseEntity<String> handleTokenException() {
-//        log.error("entity not found");
-//        return new ResponseEntity<>("invalid-token-info", HttpStatus.CONFLICT);
-//    }
-
-
-
 
     @PostMapping("/health")
     public String isAlive_post() {
@@ -70,9 +51,22 @@ public class AuthenticationController {
         return "token provider is alive - get";
     }
 
-    @ExceptionHandler(EntityNotFoundException.class)
+    /**
+     * Handles exception thrown by service.
+     * To centralize exception handling use @ControllerAdvice annotation
+     * see: https://howtodoinjava.com/spring-core/spring-exceptionhandler-annotation/
+     * @param ex
+     * @return
+     */
+    @ExceptionHandler({EntityNotFoundException.class, CredentialsException.class})
     public ResponseEntity handleEntityNotFoundException(EntityNotFoundException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
 //        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+
+    @PostMapping("/register")
+    public ResponseEntity<String> registerUser(@RequestBody AuthenticationRequest request) {
+        return null; // todo
     }
 }

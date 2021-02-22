@@ -1,8 +1,6 @@
 package com.dermacon.jwtauth.controller;
 
-import com.dermacon.jwtauth.data.AppUser;
 import com.dermacon.jwtauth.data.InputCredentials;
-import com.dermacon.jwtauth.request.AuthenticationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

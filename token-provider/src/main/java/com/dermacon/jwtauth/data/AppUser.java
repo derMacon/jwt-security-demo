@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+// todo check if lombok works here
 @Entity
 public class AppUser {
 
@@ -20,6 +21,9 @@ public class AppUser {
 
     private String password;
 
+    // todo mail format constraint
+    private String email;
+
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
@@ -27,6 +31,7 @@ public class AppUser {
         private String username;
         private String password;
         private UserRole role;
+        private String email;
 
         public Builder username(String username) {
             this.username = username;
@@ -43,6 +48,11 @@ public class AppUser {
             return this;
         }
 
+        public Builder email(String email) {
+            this.email = email;
+            return this;
+        }
+
         public AppUser build() {
             return new AppUser(this);
         }
@@ -53,16 +63,10 @@ public class AppUser {
         this.username = b.username;
         this.password = b.password;
         this.role = b.role;
+        this.email = b.email;
     }
 
     public AppUser() {}
-
-    public AppUser(String username, String password, UserRole role) {
-        this.username = username;
-        this.password = password;
-        this.role = role;
-    }
-
 
     public long getUserId() {
         return userId;
@@ -96,16 +100,27 @@ public class AppUser {
         this.role = role;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        AppUser user = (AppUser) o;
+        AppUser appUser = (AppUser) o;
 
-        if (username != null ? !username.equals(user.username) : user.username != null)
+        if (username != null ? !username.equals(appUser.username) : appUser.username != null)
             return false;
-        return role == user.role;
+        if (password != null ? !password.equals(appUser.password) : appUser.password != null)
+            return false;
+        if (email != null ? !email.equals(appUser.email) : appUser.email != null) return false;
+        return role == appUser.role;
     }
 
     @Override
