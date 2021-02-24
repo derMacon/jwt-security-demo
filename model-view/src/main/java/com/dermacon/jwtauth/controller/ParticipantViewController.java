@@ -8,6 +8,6 @@ public class ParticipantViewController {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER')")
     public String getParticipantResource() {
-        return "this is a manager user";
+        return "this is a manager user resource";
     }
 }

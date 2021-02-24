@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
@@ -60,10 +61,14 @@ public class AuthenticationService {
     }
 
     public void registerNewUser(AppUser user) {
-        if (!accountRepository.findOneByUsername(user.getUsername()).isPresent()) {
-            accountRepository.save(user);
-        } else {
-            throw new EntityNotFoundException("user already exists: " + user);
+        if (accountRepository.existsByEmail(user.getEmail())) {
+            throw new EntityExistsException("email already exists: " + user.getEmail());
         }
+        if (accountRepository.existsByUsername(user.getUsername())) {
+            throw new EntityExistsException("username already exists: " + user.getUsername());
+        }
+
+        accountRepository.save(user);
     }
+
 }

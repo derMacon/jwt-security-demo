@@ -1,6 +1,8 @@
 package com.dermacon.jwtauth.controller;
 
+import com.dermacon.jwtauth.data.AppUser;
 import com.dermacon.jwtauth.data.InputCredentials;
+import com.dermacon.jwtauth.data.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,7 +33,11 @@ public class PublicViewController {
 
     @RequestMapping("/register")
     public String register(Model model) {
-        return null; // todo
+        AppUser userTemplate = new AppUser.Builder()
+                .role(UserRole.ROLE_USER)
+                .build();
+        model.addAttribute("inputUser", userTemplate);
+        return "public/register";
     }
 
 }

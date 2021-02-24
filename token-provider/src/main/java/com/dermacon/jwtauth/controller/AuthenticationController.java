@@ -3,7 +3,6 @@ package com.dermacon.jwtauth.controller;
 import com.dermacon.jwtauth.data.AppUser;
 import com.dermacon.jwtauth.data.Credentials;
 import com.dermacon.jwtauth.exception.CredentialsException;
-import com.dermacon.jwtauth.request.AuthenticationRequest;
 import com.dermacon.jwtauth.response.JWTTokenResponse;
 import com.dermacon.jwtauth.service.AuthenticationService;
 import org.slf4j.Logger;
@@ -18,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
-import javax.security.auth.login.CredentialException;
 
 @RestController
 @RequestMapping
@@ -29,6 +28,9 @@ public class AuthenticationController {
 
     @Autowired
     private AuthenticationService authenticationService;
+
+
+    // --------------- token response ---------------
 
     /**
      * https://attacomsian.com/blog/set-cookie-with-response-entity-in-spring-boot
@@ -57,7 +59,8 @@ public class AuthenticationController {
      * see: https://howtodoinjava.com/spring-core/spring-exceptionhandler-annotation/
      * @param ex
      * @return
-     */
+     */ // todo maybe return Exception as payload???
+        // https://stackoverflow.com/questions/52183546/not-able-to-return-responseentity-with-exception-details-in-spring
     @ExceptionHandler({EntityNotFoundException.class, CredentialsException.class})
     public ResponseEntity handleEntityNotFoundException(EntityNotFoundException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
@@ -65,8 +68,18 @@ public class AuthenticationController {
     }
 
 
+    // --------------- register ---------------
+
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody AuthenticationRequest request) {
+    public ResponseEntity<String> registerUser(@RequestBody AppUser user) {
+        log.info("register user: " + user.getUsername());
+        authenticationService.registerNewUser(user);
         return null; // todo
+    }
+
+    @ExceptionHandler({EntityExistsException.class})
+    public ResponseEntity handleEntityExistsException(EntityExistsException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+//        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 }

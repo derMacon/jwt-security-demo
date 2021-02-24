@@ -2,18 +2,14 @@ package com.dermacon.jwtauth.controller;
 
 import com.dermacon.jwtauth.data.AppUser;
 import com.dermacon.jwtauth.data.InputCredentials;
+import com.dermacon.jwtauth.service.CommunicationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -27,38 +23,31 @@ import java.util.stream.Collectors;
 public class BackendController {
 
     @Autowired
-    private RestTemplate restTemplate;
+    private CommunicationService communicationService;
 
+
+    /**
+     * Provides a new jwt token for the given credentials (but only if the user with those
+     * credentials exists in the database)
+     * Also sets a cookie with a valid token
+     * @param credentials username and password of a given user
+     * @param response response object to which a redirect will be made
+     * @throws IOException exception when the redirect to the new url cannot be performed for
+     * whatever reason
+     */
     @PostMapping("/refresh-token")
     public void refreshToken(@ModelAttribute(value = "inputCredentials") InputCredentials credentials,
                                HttpServletResponse response) throws IOException {
-
-        ResponseEntity<String> tokenResponse;
-        String redirect_url = "/public/all-cookies";
-
-        try {
-
-            AppUser user = new AppUser.Builder()
-                    .username(credentials.getUsername())
-                    .password(credentials.getPassword())
-                    .build();
-
-            tokenResponse = restTemplate.postForEntity("http://token-provider/create-token",
-                    user, String.class);
-
-            if (tokenResponse.getStatusCode() == HttpStatus.OK) {
-                response.addCookie(new Cookie("jwt-token", tokenResponse.getBody()));
-            } else {
-                redirect_url = "/login?error=" + tokenResponse.getStatusCode();
-            }
-
-            // todo handle java.net.ConnectException (when token-provider is down)
-        } catch (HttpClientErrorException | HttpServerErrorException e) {
-            redirect_url = "/login?error=404";
-        }
-
-        response.sendRedirect(redirect_url);
+        communicationService.refreshToken(credentials, response);
     }
+
+
+    @PostMapping("/register")
+    public void createUser(@ModelAttribute(value = "inputUser")AppUser user,
+        HttpServletResponse response) throws IOException {
+            communicationService.registerUser(user, response);
+    }
+
 
     @GetMapping("/all-cookies")
     public String readAllCookies(HttpServletRequest request) {

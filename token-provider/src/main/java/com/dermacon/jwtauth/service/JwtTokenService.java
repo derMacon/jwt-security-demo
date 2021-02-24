@@ -1,7 +1,6 @@
 package com.dermacon.jwtauth.service;
 
 import com.dermacon.jwtauth.data.AppUser;
-import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.slf4j.Logger;
