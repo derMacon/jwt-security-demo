@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>title</title>
+</head>
+<body>
+
+<h3>Login</h3>
+
+<div th:if="${errorMessage != null}">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<form action="#" method="post"
+      th:action="@{/public/refresh-token}"
+      th:object="${inputCredentials}"
+      th:placeholder="Credentials">
+
+    <div class="form-group">
+        <input class="form-control" th:field="*{username}"
+               th:value="${inputCredentials.username}"
+               th:placeholder="username"
+               type="text"/>
+    </div>
+
+    <div class="form-group">
+        <input class="form-control" th:field="*{password}"
+               th:value="${inputCredentials.password}"
+               th:placeholder="password"
+               type="text"/>
+    </div>
+
+    <button class="btn btn-outline-dark btn-block" type="submit" value="add">
+        login
+    </button>
+
+</form>
+
+</body>
+</html>
