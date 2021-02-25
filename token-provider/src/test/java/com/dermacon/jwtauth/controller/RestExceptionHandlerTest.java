@@ -1,6 +1,7 @@
 package com.dermacon.jwtauth.controller;
 
 import com.dermacon.jwtauth.data.AppUser;
+import com.dermacon.jwtauth.data.Credentials;
 import com.dermacon.jwtauth.data.UserRole;
 import com.dermacon.jwtauth.repository.AccountRepository;
 import com.dermacon.jwtauth.service.AuthenticationService;
@@ -9,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -16,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,26 +33,14 @@ class RestExceptionHandlerTest {
     /**
      * Used to serialize test data
      */
-//    @Autowired
-//    private ObjectMapper objectMapper;
-//
-//    @Autowired
-//    private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-//    @Autowired
-//    private AuthenticationController authenticationController;
+    @Autowired
+    private MockMvc mockMvc;
 
-//    @Autowired
-//    private AuthenticationService authenticationService;
-//
-//    @MockBean
-//    private AccountRepository accountRepository;
-//
-//    @MockBean
-//    private JwtTokenService jwtTokenService;
-//
-//    @MockBean
-//    private PasswordEncoder passwordEncoder;
+    @MockBean
+    private AuthenticationService authenticationService;
 
 
     /**
@@ -66,18 +57,19 @@ class RestExceptionHandlerTest {
 
     @Test
     public void test_validUser_returns200() throws Exception {
-//        AppUser user = AppUser.builder()
-//                .email("test@mail.com")
-//                .username("admin1")
-//                .password("password")
-//                .role(UserRole.ROLE_ADMIN)
-//                .build();
-//
-//        when(accountRepository.findOneByUsername("admin1")).thenReturn(Optional.empty());
-//
-//        mockMvc.perform(post("/create-token")
-//                .contentType("application/json").content(objectMapper.writeValueAsString(user)))
-//                .andExpect(status().isOk());
+        when(authenticationService.generateJWTToken(Mockito.any(Credentials.class)))
+                .thenThrow(new EntityNotFoundException("Account not found"));
+
+        AppUser user = AppUser.builder()
+                .email("test@mail.com")
+                .username("admin1")
+                .password("password")
+                .role(UserRole.ROLE_ADMIN)
+                .build();
+
+        mockMvc.perform(post("/create-token")
+                .contentType("application/json").content(objectMapper.writeValueAsString(user)))
+                .andExpect(status().isNotFound()); // 404;
     }
 
 
