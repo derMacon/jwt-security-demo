@@ -3,9 +3,11 @@ package com.dermacon.jwtauth.controller;
 import com.dermacon.jwtauth.data.AppUser;
 import com.dermacon.jwtauth.data.Credentials;
 import com.dermacon.jwtauth.data.UserRole;
+import com.dermacon.jwtauth.exception.CredentialsException;
 import com.dermacon.jwtauth.repository.AccountRepository;
 import com.dermacon.jwtauth.service.AuthenticationService;
 import com.dermacon.jwtauth.service.JwtTokenService;
+import com.dermacon.jwtauth.utils.AppUserUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
@@ -48,6 +50,7 @@ class RestExceptionHandlerTest {
      * https://stackoverflow.com/questions/15302243/spring-mvc-controllers-unit-test-not-calling-controlleradvice
      * @throws Exception
      */
+    // todo for some reason this isn't even necessary???
 //    @Before
 //    public void beforeTest() {
 //        MockMvc mockMvc = standaloneSetup(authenticationController)
@@ -56,30 +59,26 @@ class RestExceptionHandlerTest {
 //    }
 
     @Test
-    public void test_validUser_returns200() throws Exception {
+    public void  test_nonExistentUser_returns404() throws Exception {
         when(authenticationService.generateJWTToken(Mockito.any(Credentials.class)))
                 .thenThrow(new EntityNotFoundException("Account not found"));
 
-        AppUser user = AppUser.builder()
-                .email("test@mail.com")
-                .username("admin1")
-                .password("password")
-                .role(UserRole.ROLE_ADMIN)
-                .build();
+        AppUser user = AppUserUtils.createRandomUser();
 
         mockMvc.perform(post("/create-token")
                 .contentType("application/json").content(objectMapper.writeValueAsString(user)))
                 .andExpect(status().isNotFound()); // 404;
     }
 
-
-
-
-
     @Test
-    public void test_invalidUser_returns404() throws Exception {
-//        mockMvc = standaloneSetup()
-//                .setControllerAdvice(new YourControllerAdvice())
-//                .build();
-    }
-}
+    public void test_validUsernameInvalidCredentials_returns401() throws Exception {
+
+        when(authenticationService.generateJWTToken(Mockito.any(Credentials.class)))
+                .thenThrow(new CredentialsException("invalid credentials"));
+
+        AppUser user = AppUserUtils.createRandomUser();
+
+        mockMvc.perform(post("/create-token")
+                .contentType("application/json").content(objectMapper.writeValueAsString(user)))
+                .andExpect(status().isUnauthorized()); // 401
+    }}
