@@ -13,3 +13,6 @@ Demo for securing microservices via JWT
 * http status codes [overview](https://www.baeldung.com/cs/http-status-codes)
 * spring api error handling [baeldung](https://www.baeldung.com/exception-handling-for-rest-with-spring)
 * spring [docs](https://spring.io/blog/2013/11/01/exception-handling-in-spring-mvc) (especially paragraph "Errors and REST")
+
+### Mocking
+* intro [mockMvc](https://reflectoring.io/spring-boot-web-controller-test/)
