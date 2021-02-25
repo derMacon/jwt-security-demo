@@ -53,19 +53,7 @@ public class AuthenticationController {
         return "token provider is alive - get";
     }
 
-    /**
-     * Handles exception thrown by service.
-     * To centralize exception handling use @ControllerAdvice annotation
-     * see: https://howtodoinjava.com/spring-core/spring-exceptionhandler-annotation/
-     * @param ex
-     * @return
-     */ // todo maybe return Exception as payload???
-        // https://stackoverflow.com/questions/52183546/not-able-to-return-responseentity-with-exception-details-in-spring
-    @ExceptionHandler({EntityNotFoundException.class, CredentialsException.class})
-    public ResponseEntity handleEntityNotFoundException(EntityNotFoundException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
-//        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-    }
+
 
 
     // --------------- register ---------------
@@ -77,9 +65,9 @@ public class AuthenticationController {
         return null; // todo
     }
 
-    @ExceptionHandler({EntityExistsException.class})
-    public ResponseEntity handleEntityExistsException(EntityExistsException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
-//        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-    }
+//    @ExceptionHandler({EntityExistsException.class})
+//    public ResponseEntity handleEntityExistsException(EntityExistsException ex) {
+//        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+////        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+//    }
 }
