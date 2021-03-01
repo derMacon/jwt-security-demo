@@ -1,11 +1,11 @@
 package com.dermacon.jwtauth.service;
 
 import com.dermacon.jwtauth.data.Credentials;
-import com.dermacon.jwtauth.exception.CredentialsException;
 import com.dermacon.jwtauth.repository.AccountRepository;
 import com.dermacon.jwtauth.data.AppUser;
 import com.dermacon.jwtauth.response.JWTTokenResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -55,7 +55,7 @@ public class AuthenticationService {
             throw new EntityNotFoundException("Account not found");
         }
         if (!db_user.get().equals(inputUser)) {
-            throw new CredentialsException("invalid credentials");
+            throw new BadCredentialsException("invalid credentials");
         }
         return new JWTTokenResponse(jwtTokenService.generateToken(inputUser));
     }

@@ -1,13 +1,25 @@
 package com.dermacon.jwtauth.data;
 
-// todo use lombok
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.Value;
+
+import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
+
+//@Value
+//@Data
+//@Builder
+//@AllArgsConstructor
 public class Credentials {
 
+    @NotNull
     private String username;
-    private String password;
 
-    public Credentials() {
-    }
+    @NotNull
+    private String password;
 
     public Credentials(String username, String password) {
         this.username = username;
@@ -28,13 +40,5 @@ public class Credentials {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    @Override
-    public String toString() {
-        return "InputCredentials{" +
-                "username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                '}';
     }
 }

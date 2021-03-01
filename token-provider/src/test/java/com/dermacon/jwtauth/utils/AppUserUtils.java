@@ -14,4 +14,13 @@ public class AppUserUtils {
                 .build();
     }
 
+    public static AppUser createInvalidUser_emailFormat() {
+        return AppUser.builder()
+                .email("invalidEmail.com")
+                .username("admin1")
+                .password("password")
+                .role(UserRole.ROLE_ADMIN)
+                .build();
+    }
+
 }

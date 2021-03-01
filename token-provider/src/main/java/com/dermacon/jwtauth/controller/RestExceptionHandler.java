@@ -1,10 +1,12 @@
 package com.dermacon.jwtauth.controller;
 
 import com.dermacon.jwtauth.exception.ApiError;
+import com.dermacon.jwtauth.exception.ContainsNullPointerException;
 import com.dermacon.jwtauth.response.ErrorInfo;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -14,7 +16,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 /**
  * source: https://www.toptal.com/java/spring-boot-rest-api-error-handling
@@ -41,6 +43,30 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ErrorInfo.builder()
                 .url(req)
                 .status(NOT_FOUND)
+                .exception(ex)
+                .build();
+    }
+
+    @ResponseStatus(UNAUTHORIZED)
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseBody
+    ErrorInfo
+    handleBadCredentials(HttpServletRequest req, Exception ex) {
+        return ErrorInfo.builder()
+                .url(req)
+                .status(UNAUTHORIZED)
+                .exception(ex)
+                .build();
+    }
+
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(ContainsNullPointerException.class)
+    @ResponseBody
+    ErrorInfo
+    handleWrongFormatRequest(HttpServletRequest req, Exception ex) {
+        return ErrorInfo.builder()
+                .url(req)
+                .status(BAD_REQUEST)
                 .exception(ex)
                 .build();
     }
